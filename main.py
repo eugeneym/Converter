@@ -1,3 +1,5 @@
+
+
 from flask import Flask, request, render_template, send_file, redirect, url_for
 from werkzeug.utils import secure_filename
 from PIL import Image
@@ -22,7 +24,6 @@ def upload_file():
     if request.method == 'POST':
         files = request.files.getlist('file[]')
 
-#                file = request.files['file']
         ratio = request.form.to_dict('ratio')
         power = int(ratio['ratio'])
         fpath = []
@@ -30,7 +31,9 @@ def upload_file():
         if files:
             for file in files:
 
-                filename = secure_filename(file.filename)
+                # filename = secure_filename(file.filename)
+                filename = file.filename
+                print('имя файла:', filename, flush=True)
                 try:
                     file.save(os.path.join(UPLOAD_FOLDER, filename))
                     ext = filename.rsplit('.', 1)[1]
@@ -83,15 +86,16 @@ def senda(out):
 def compress_video(input_file_path, output_file_path, power):
     if power == 0:
         converter = os.system((
-            'ffmpeg -y -hide_banner -loglevel panic -i {} -vcodec libx264 -crf 23 -preset veryfast -c:a copy {}').format(input_file_path, output_file_path))
+            "ffmpeg -y -hide_banner -loglevel panic -i '{}' -vcodec libx264 -crf 23 -preset veryfast -c:a copy '{}'").format(input_file_path, output_file_path))
     elif power == 4:
         converter = os.system((
-                                  'ffmpeg -y -hide_banner -loglevel panic -i {} -vcodec libx264 -crf 27 -preset veryfast -c:a copy {}').format(
+                                  "ffmpeg -y -hide_banner -loglevel panic -i '{}' -vcodec libx264 -crf 27 -preset veryfast -c:a copy '{}'").format(
             input_file_path, output_file_path))
     elif power == 8:
         converter = os.system((
-                                  'ffmpeg -y -hide_banner -loglevel panic -i {} -vcodec libx264 -crf 35 -preset veryfast -c:a copy {}').format(
+                                  "ffmpeg -y -hide_banner -loglevel panic -i '{}' -vcodec libx264 -crf 35 -preset veryfast -c:a copy '{}'").format(
             input_file_path, output_file_path))
+
 
 
 def compress_pdf(input_file_path, output_file_path, power):
